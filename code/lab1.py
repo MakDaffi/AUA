@@ -2,7 +2,8 @@ import numpy as np
 import json
 
 
-def isTran(a, n):
+def isTran(a):
+    n = len(a)
     b = np.matmul(a, a)
     for i in range(n):
         for j in range(n):
@@ -37,7 +38,7 @@ def isSymm(a):
         b = np.matmul(a, b)
         for i in range(len(b)):
             for j in range(len(b[i])):
-                if b[i][j] == 1 and i != j:
+                if b[i][j] != 0 and i != j:
                     f = False
                     break
         if f:
@@ -48,7 +49,8 @@ def isSymm(a):
             return 'ns'
 
 
-def isRefl(a, n):
+def isRefl(a):
+    n = len(a)
     sum = 0
     for i in range(n):
         sum += a[i][i]
@@ -63,19 +65,22 @@ def isRefl(a, n):
         return 'nr'
 
 
-def makeRefl(a, n):
+def makeRefl(a):
+    n = len(a)
     for i in range(n):
         a[i][i] = 1
 
 
-def makeSymm(a, n):
+def makeSymm(a):
+    n = len(a)
     for i in range(n):
         for j in range(n):
             if a[i][j]:
                 a[j][i] = 1
 
 
-def makeTran(a, n):
+def makeTran(a):
+    n = len(a)
     for k in range(n):
         for i in range(n):
             for j in range(n):
@@ -129,7 +134,7 @@ if __name__ == "__main__":
         print("Relation's set")
         print(*get_set(a))
     print('-----------------------------------------')
-    properties = {"reflexive": isRefl(a, n), "symmetry": isSymm(a), "transitive": isTran(a, n)}
+    properties = {"reflexive": isRefl(a), "symmetry": isSymm(a), "transitive": isTran(a)}
     print('-----------------------------------------')
     if properties['reflexive'] == 'r' and properties['symmetry'] == 's' and properties['transitive'] == 't':
         print('Relation is equivalent')
@@ -144,11 +149,11 @@ if __name__ == "__main__":
         print('Relation is the relation of the strict order')
         print('-----------------------------------------')
     if properties['reflexive'] != 'r':
-        makeRefl(a, n)
+        makeRefl(a)
     if properties['symmetry'] != 's':
-        makeSymm(a, n)
+        makeSymm(a)
     if properties['transitive'] != 't':
-        makeTran(a, n)
+        makeTran(a)
     print('Closure matrix: ')
     print(a)
     print('-----------------------------------------')
