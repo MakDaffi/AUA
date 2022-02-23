@@ -81,11 +81,12 @@ def makeSymm(a):
 
 def makeTran(a):
     n = len(a)
-    for k in range(n):
-        for i in range(n):
-            for j in range(n):
-                if a[i][k] and a[k][j]:
-                    a[i][j] = 1
+    for c in range(n):
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if a[i][k] and a[k][j]:
+                        a[i][j] = 1
 
 def get_set(a):
     s = []
