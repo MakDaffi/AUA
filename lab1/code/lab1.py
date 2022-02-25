@@ -35,7 +35,7 @@ def isSymm(a):
         return 's'
     else:
         f = True
-        b = np.matmul(a, b)
+        b = np.multiply(a, b)
         for i in range(len(b)):
             for j in range(len(b[i])):
                 if b[i][j] != 0 and i != j:
