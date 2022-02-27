@@ -7,8 +7,8 @@ def isTran(a):
     b = np.matmul(a, a)
     for i in range(n):
         for j in range(n):
-            if b[i][j]:
-                b[i][j] = b[i][j] / b[i][j]
+            if b[i][j] > 1:
+                b[i][j] = 1
     f = (a >= b).all()
     if f:
         print("Set is transitive")
@@ -81,10 +81,10 @@ def makeSymm(a):
 
 def makeTran(a):
     n = len(a)
-    for c in range(n):
-        for k in range(n):
-            for i in range(n):
-                for j in range(n):
+    for m in range(n):
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
                     if a[i][k] and a[k][j]:
                         a[i][j] = 1
 
@@ -149,12 +149,9 @@ if __name__ == "__main__":
     if properties['reflexive'] == 'ar' and properties['symmetry'] == 'as' and properties['transitive'] == 't':
         print('Relation is the relation of the strict order')
         print('-----------------------------------------')
-    if properties['reflexive'] != 'r':
-        makeRefl(a)
-    if properties['symmetry'] != 's':
-        makeSymm(a)
-    if properties['transitive'] != 't':
-        makeTran(a)
+    #makeRefl(a)
+    makeSymm(a)
+    #makeTran(a)
     print('Closure matrix: ')
     print(a)
     print('-----------------------------------------')
@@ -162,3 +159,8 @@ if __name__ == "__main__":
     print(*get_set(a))
     print('-----------------------------------------')
 
+#[[1 1 1 1 1]
+# [1 1 1 1 1]
+# [1 1 1 0 1]
+# [1 1 0 1 0]
+# [1 1 1 0 1]]

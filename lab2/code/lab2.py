@@ -1,5 +1,5 @@
 import numpy as np
-import json
+import matplotlib.pyplot as plt
 
 
 def isTran(a):
@@ -140,26 +140,65 @@ def create_representative_system(factor_set):
     for k, v in elem_dict.items():
        print(f"{k} \u2208 {list(v)}; ")
 
-def get_dividers(num):
+
+def get_dividers(num, set = None):
     i = 1
     ans = []
-    while(num >= i):
-        if num % i == 0:
-            ans.append(i)
-        i += 1
+    if set == None:
+        while(num >= i):
+            if num % i == 0:
+                ans.append(i)
+            i += 1
+    else:
+        for s in set:
+            if num % s == 0:
+                ans.append(s)
     return ans
 
-def get_level(dividers):
-    a = [get_dividers(div) for div in dividers]
+
+def get_level(dividers, set=None):
+    a = [get_dividers(div, set=set) for div in dividers]
     dct = {dividers[i]: 0 for i in range(len(a))}
-    dct[1] = 1
-    for an in a[1:]:
+    for an in a:
         m = 0
         for h in an:
             if m < dct[h]:
                 m = dct[h]
         dct[an[len(an) - 1]] = m + 1
     return dct
+
+
+def visualization(levels, max_level):
+    plt.xlim(-1.0, max_level * 2)
+    plt.ylim(0, len(levels) * 3 + 1.5)
+    lvl = 1.5
+    a = []
+    for i in range(len(levels)):
+        x = (max_level - len(levels[i]))
+        l = 0
+        b = []
+        for j in range(len(levels[i])):
+            plt.text(x + l, i + lvl, f'{levels[i][j]}')
+            plt.scatter(x + l + 0.1, i + lvl + 0.15, s=350, facecolors='none', edgecolors='black')
+            b.append((x + l, i + lvl, levels[i][j]))
+            if i > 0:
+                div = []
+                for g in range(len(a)-1, -1, -1):
+                    for c in a[g]:
+                        flag = True
+                        for d in div:
+                            if d % c[2] == 0:
+                                flag = False
+                        if levels[i][j] % c[2] == 0 and flag:
+                            plt.plot([c[0] + 0.15, x + l + 0.15], [c[1] + 0.65, i + lvl - 0.45], color='black')
+                            div.append(c[2])
+            l += 2
+        a.append(b)
+        lvl += 2
+
+    plt.show()
+
+
 
 def task1():
     print("How you want enter your relation (set or matrix)?")
@@ -217,8 +256,7 @@ def task1():
         makeRefl(a)
     if properties['symmetry'] != 's':
         makeSymm(a)
-    if properties['transitive'] != 't':
-        makeTran(a)
+    makeTran(a)
     print('Closure matrix: ')
     print(a)
     print('-----------------------------------------')
@@ -229,12 +267,32 @@ def task1():
     factor_set = create_factor_set(a)
     create_representative_system(factor_set)
 
+
 def task2():
-    print('Enter your number')
-    num = int(input())
-    dividers = get_dividers(num)
-    print(f'Dividers of {num} : {dividers}')
-    print(get_level(dividers))
+    print("The relation of divisibility on a set or on a number")
+    h = input()
+    if h == "number":
+        print('Enter your number')
+        num = int(input())
+        dividers = get_dividers(num)
+        print(f'Dividers of {num} : {dividers}')
+        dct = get_level(dividers)
+    else:
+        print('Enter your set')
+        st = list(map(int, input().split()))
+        st.sort()
+        dct = get_level(st, set=st)
+    last_level = 1
+    for key in dct:
+        last_level = max(dct[key], last_level) 
+    print(dct)
+    levels = [[] for _ in range(last_level)]
+    for key in dct:
+        levels[dct[key] - 1].append(key)
+    max_level = 1
+    for lvl in levels:
+        max_level = max(max_level, len(lvl))
+    visualization(levels, max_level)
 
 
 
