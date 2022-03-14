@@ -1,3 +1,4 @@
+from re import I, M
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -156,9 +157,7 @@ def get_dividers(num, set = None):
     return ans
 
 
-def get_level(dividers, set=None):
-    a = [get_dividers(div, set=set) for div in dividers]
-    dct = {dividers[i]: 0 for i in range(len(a))}
+def get_level(a, dct):
     for an in a:
         m = 0
         for h in an:
@@ -183,7 +182,7 @@ def visualization(levels, max_level):
             b.append((x + l, i + lvl, levels[i][j]))
             if i > 0:
                 div = []
-                for g in range(len(a)-1, -1, -1):
+                for g in range(len(a) - 1, -1, -1):
                     for c in a[g]:
                         flag = True
                         for d in div:
@@ -195,9 +194,84 @@ def visualization(levels, max_level):
             l += 2
         a.append(b)
         lvl += 2
-
     plt.show()
 
+
+def get_max_elem(dct, st = [], is_matrix = False):
+    if not(is_matrix):
+        m = -10000000
+        for key in dct:
+            m = max(m, key)
+        return m
+    else:
+        a = get_slices_list(dct)
+        lst = [len(b) for b in a]
+        l = max(lst)
+        ans = []
+        for i in range(len(lst)):
+            if lst[i] == l:
+                ans.append(st[i])
+        return ans
+
+
+def get_min_elem(dct, st = [], is_matrix = False):
+    if not(is_matrix):
+        m = 10000000
+        for key in dct:
+            m = min(m, key)
+        return m
+    else:
+        a = get_slices_list(dct)
+        print(a)
+        lst = [len(b) for b in a]
+        l = min(lst)
+        ans = []
+        for i in range(len(lst)):
+            if lst[i] == l:
+                ans.append(st[i])
+        return ans
+
+
+def get_smallest_element(dct, st =[], is_matrix = False):
+    if not(is_matrix):
+        m = 10000000
+        for key in dct:
+            m = min(m, key)
+        cnt = 0
+        for key in dct:
+            if key == m:
+                cnt += 1
+        if cnt == 1:
+            return m
+        else:
+            return None
+    else:
+        ans = get_min_elem(dct, st, is_matrix)
+        if len(ans) == 1:
+            return ans[0]
+        else:
+            return None
+
+
+def get_largest_element(dct, st = [], is_matrix = False):
+    if not(is_matrix):
+        m = -1000000
+        for key in dct:
+            m = max(m, key)
+        cnt = 0
+        for key in dct:
+            if key == m:
+                cnt += 1
+        if cnt == 1:
+            return m
+        else:
+            return None
+    else:
+        ans = get_max_elem(dct, st, is_matrix)
+        if len(ans) == 1:
+            return ans[0]
+        else:
+            return None
 
 
 def task1():
@@ -268,20 +342,87 @@ def task1():
     create_representative_system(factor_set)
 
 
+def get_level_matrix(matrix, st):
+    dct = {st[i]: 0 for i in range(len(st))}
+    i = 1
+    matrix = np.array(matrix, int)
+    while(matrix.any()):
+        m = get_min_elem(matrix, st=st, is_matrix=True)
+        for elem in m:
+            dct[elem] = i
+            matrix = np.delete(matrix, [st.index(elem)], 0)
+            matrix = np.delete(matrix, [st.index(elem)], 1)
+            st.remove(elem)
+        print(matrix)
+        i += 1
+    return dct
+
+
 def task2():
-    print("The relation of divisibility on a set or on a number")
+    print("The relation of divisibility on a set or on a number or matrix")
     h = input()
     if h == "number":
         print('Enter your number')
         num = int(input())
         dividers = get_dividers(num)
         print(f'Dividers of {num} : {dividers}')
-        dct = get_level(dividers)
+        print(f"Maximum element is {get_max_elem(dividers)}")
+        print(f"Minimum element is {get_min_elem(dividers)}")
+        print(f"The smallest element is {get_smallest_element(dividers)}")
+        print(f"The largest element is {get_largest_element(dividers)}")
+        a = [get_dividers(div) for div in dividers]
+        print(a)
+        dct = {dividers[i]: 0 for i in range(len(a))}
+        dct = get_level(a, dct)
+    elif h == "set":
+        print('Enter your set')
+        st = list(map(int, input().split()))
+        print(f"Maximum element is {get_max_elem(st)}")
+        print(f"Minimum element is {get_min_elem(st)}")
+        ls = get_smallest_element(st)
+        bs = get_largest_element(st)
+        if ls:
+            print(f"The smallest element is {ls}")
+        else:
+            print("The smallest element doesn't exist")
+        if bs:
+            print(f"The largest element is {bs}")
+        else:
+            print("The largest element doesn't exist")
+        st = list(set(st))
+        a = [get_dividers(div, set=st) for div in st]
+        dct = {st[i]: 0 for i in range(len(a))}
+        dct = get_level(a, dct)
     else:
         print('Enter your set')
         st = list(map(int, input().split()))
-        st.sort()
-        dct = get_level(st, set=st)
+        st = list(set(st))
+        print("Enter your matrix")
+        print("  ", *st)
+        matrix = []
+        a = []
+        for i in range(len(st)):
+            print(st[i], end="  ")
+            b = []
+            s = list(map(int, input().split()))
+            for i in range(len(s)):
+                if s[i]:
+                    b.append(st[i])
+            a.append(b)
+            matrix.append(s)
+        print(f"Maximum element is {get_max_elem(matrix, st=st, is_matrix=True)}")
+        print(f"Minimum element is {get_min_elem(matrix, st=st, is_matrix=True)}")
+        ls = get_smallest_element(matrix, st=st, is_matrix=True)
+        bs = get_largest_element(matrix, st=st, is_matrix=True)
+        if ls:
+            print(f"The smallest element is {ls}")
+        else:
+            print("The smallest element doesn't exist")
+        if bs:
+            print(f"The largest element is {bs}")
+        else:
+            print("The largest element doesn't exist")
+        dct = get_level_matrix(matrix, st)
     last_level = 1
     for key in dct:
         last_level = max(dct[key], last_level) 
@@ -295,7 +436,69 @@ def task2():
     visualization(levels, max_level)
 
 
+def task3():
+    print("Enter your set:")
+    st = list(map(int, input().split()))
+    print("Enter your context:")
+    context = list(input().split())
+    print("Enter your matrix")
+    print("  ", *context)
+    matrix = []
+    for i in range(len(st)):
+        print(st[i], end="  ")
+        s = list(map(int, input().split()))
+        matrix.append(s)
+    matrix = np.array(matrix)
+    dct = {}
+    for i in range(len(context)):
+        dct[tuple(context[i])] = matrix[:, i]
+    dct1 = {}
+    dct2 = dct
+    for i in range(len(st)):
+        for key in dct:
+            for k in dct2:
+                a = np.multiply(dct2[k], dct[key])
+                cnt = 0
+                for c in a:
+                    cnt += c
+                if cnt and key != k:
+                    g = list(key)
+                    g.extend(list(k))
+                    g.sort()
+                    dct1[tuple(set(g))] = a
+                elif cnt:
+                    dct1[tuple(key)] = a
+        dct2 = dct1.copy()
+    dl = []
+    for key in dct1:
+        for k in dct1:
+            if np.array_equal(dct1[key],dct1[k]):
+                if len(key) > len(k):
+                    dl.append(k)
+                elif len(key) < len(k):
+                    dl.append(key)
+    dl = list(set(dl))
+    for d in dl:
+        del dct1[d]
+    for key in dct1:
+        b = dct1[key]
+        a = []
+        for i in range(len(b)):
+            if b[i]:
+                a.append(st[i])
+            dct1[key] = a
+    print(dct1)
+
 
 if __name__ == "__main__":
-    task2()
+    print("What are you want? (1 - Create factor set, 2 - Build Hasse diagram, 3 - build lattice concept)")
+    f = int(input())
+    if f == 1:
+        task1()
+    elif f == 2:
+        task2()
+    elif f == 3:
+        task3()
+    else:
+        print("Something going wrong! Enter a number from 1 to 3")
 
