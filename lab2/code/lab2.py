@@ -222,7 +222,6 @@ def get_min_elem(dct, st = [], is_matrix = False):
         return m
     else:
         a = get_slices_list(dct)
-        print(a)
         lst = [len(b) for b in a]
         l = min(lst)
         ans = []
@@ -345,7 +344,6 @@ def task1():
 def get_level_matrix(matrix, st):
     dct = {st[i]: 0 for i in range(len(st))}
     i = 1
-    matrix = np.array(matrix, int)
     while(matrix.any()):
         m = get_min_elem(matrix, st=st, is_matrix=True)
         for elem in m:
@@ -353,7 +351,6 @@ def get_level_matrix(matrix, st):
             matrix = np.delete(matrix, [st.index(elem)], 0)
             matrix = np.delete(matrix, [st.index(elem)], 1)
             st.remove(elem)
-        print(matrix)
         i += 1
     return dct
 
@@ -410,6 +407,8 @@ def task2():
                     b.append(st[i])
             a.append(b)
             matrix.append(s)
+        matrix = np.array(matrix, int)
+        matrix = matrix.T
         print(f"Maximum element is {get_max_elem(matrix, st=st, is_matrix=True)}")
         print(f"Minimum element is {get_min_elem(matrix, st=st, is_matrix=True)}")
         ls = get_smallest_element(matrix, st=st, is_matrix=True)
