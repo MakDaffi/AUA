@@ -150,15 +150,30 @@ def isCommutative(matrix):
 
 def isIdempotent(matrix, st):
     flag = True
-    for i in range(matrix):
+    for i in range(len(matrix)):
         if not(matrix[i][i] == st[i]):
-            flag = True
+            flag = False
             break
     if flag:
         print('This operation is idempotent!')
     else:
         print('This operation is not idempotent!')
 
+
+def isReversible(matrix, st):
+    rev = []
+    for i in range(len(st)):
+        flag = True
+        for j in range(len(st)):
+            if not(matrix[i][j] == matrix[j][i] == 1):
+                flag = False
+                break
+        if flag:
+            rev.append(st[i])
+    if rev:
+        print(f'Reverse elements of the operation: {rev}')
+    else:
+        print('This operation is not reversible!')
 
 
 def task1():
@@ -174,6 +189,9 @@ def task1():
     matrix = np.array(matrix)
     isAssociative(matrix, st)
     isCommutative(matrix)
+    isIdempotent(matrix, st)
+    isReversible(matrix, st)
+
 
 if __name__ == "__main__":
     task1()
