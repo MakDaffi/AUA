@@ -148,6 +148,19 @@ def isCommutative(matrix):
         print('This operation is not commutative!')
 
 
+def isIdempotent(matrix, st):
+    flag = True
+    for i in range(matrix):
+        if not(matrix[i][i] == st[i]):
+            flag = True
+            break
+    if flag:
+        print('This operation is idempotent!')
+    else:
+        print('This operation is not idempotent!')
+
+
+
 def task1():
     print("Enter your set")
     st = list(map(int, input().split()))
