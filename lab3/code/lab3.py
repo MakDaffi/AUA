@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def get_set(a):
     s = []
     for i in range(len(a)):
@@ -117,6 +118,49 @@ def task3():
             print(np.dot(a, b))
 
 
+def isAssociative(matrix, st):
+    flag = True
+    for i in range(len(st)):
+        st1 = [matrix[i][j] for j in range(len(st))]
+        matrix1 = np.zeros((len(st), len(st)), int)
+        for j in range(len(st)):
+            for g in range(len(st)):
+                matrix1[j][g] = matrix[j][st.index(st1[g])]
+        st2 = [matrix[j][i] for j in range(len(st))]
+        matrix2 = np.zeros((len(st), len(st)), int)
+        for j in range(len(st)):
+            for g in range(len(st)):
+                matrix2[j][g] = matrix[st.index(st2[j])][g]
+        flag = (matrix1 == matrix2).all()
+        if not(flag):
+            break
+    if flag:
+        print('This operation is associative!')
+    else:
+        print('This operation is not associative!')
+
+
+def isCommutative(matrix):
+    matrix1 = matrix.T
+    if (matrix1 == matrix).all():
+        print('This operation is commutative!')
+    else:
+        print('This operation is not commutative!')
+
+
+def task1():
+    print("Enter your set")
+    st = list(map(int, input().split()))
+    print('Enter Cayley table')
+    print("  ", *st)
+    matrix = []
+    for i in range(len(st)):
+        print(st[i], end="  ")
+        s = list(map(int, input().split()))
+        matrix.append(s)
+    matrix = np.array(matrix)
+    isAssociative(matrix, st)
+    isCommutative(matrix)
 
 if __name__ == "__main__":
-    task2()
+    task1()
