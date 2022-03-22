@@ -176,6 +176,32 @@ def isReversible(matrix, st):
         print('This operation is not reversible!')
 
 
+def isDistributive(matrix, st):
+    print('Enter Cayley table for another operation')
+    print("  ", *st)
+    matrix1 = []
+    for i in range(len(st)):
+        print(st[i], end="  ")
+        s = list(map(int, input().split()))
+        matrix1.append(s)
+    matrix1 = np.array(matrix1)
+    flag = True
+    for i in range(len(st)):
+        for j in range(len(st)):
+            for g in range(len(st)):
+                if not(matrix[i][st.index(matrix1[j][g])] ==
+                matrix1[st.index(matrix[i][j])][st.index(matrix[i][g])]
+                and matrix[st.index(matrix1[j][g])][j] ==
+                matrix1[st.index(matrix[j][i])][st.index(matrix[g][i])]):
+                    flag = False
+                    break
+    if flag:
+        print('This operation is distributive with respect to the introduced operation!')
+    else:
+        print('This operation is not distributive!')
+
+
+
 def task1():
     print("Enter your set")
     st = list(map(int, input().split()))
@@ -191,6 +217,7 @@ def task1():
     isCommutative(matrix)
     isIdempotent(matrix, st)
     isReversible(matrix, st)
+    isDistributive(matrix, st)
 
 
 if __name__ == "__main__":
