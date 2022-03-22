@@ -51,13 +51,10 @@ def con(a):
 
 
 def reverse(a):
-    n = len(a)
-    st = get_set(a)
-    st1 = []
-    for s in st:
-        st1.append((s[1], s[0]))
-    print(get_matrix(st1, n))
-    print(st1)
+    a = np.array(a, int)
+    b = a.T
+    print(b)
+    print(*get_set(b))
 
 def composition(a):
     n = len(a)
@@ -201,7 +198,6 @@ def isDistributive(matrix, st):
         print('This operation is not distributive with respect to the introduced operation!')
 
 
-
 def task1():
     print("Enter your set")
     st = list(map(int, input().split()))
@@ -220,5 +216,35 @@ def task1():
     isDistributive(matrix, st)
 
 
+def task4(lambda_digit=2):
+    st = [1, 2, 3, 4]
+    matrix = np.array([[1, 2, 1, 2],
+                             [1, 2, 1, 2],
+                             [1, 2, 3, 4],
+                             [1, 2, 3, 4]])
+    print("Task 1:")
+    isAssociative(matrix, st)
+    matrix_a = np.array([[1, -2], [-3, lambda_digit]])
+    koef = lambda_digit / 2
+    print("Task 2:")
+    print(np.matmul(matrix_a, matrix_a) + (10 - koef) * matrix_a + koef * np.ones((2, 2)))
+    matrix_a = np.array([[-1, lambda_digit, 3], [lambda_digit / 3, 2, 8 - lambda_digit / 3]])
+    matrix_b = np.array([[-lambda_digit, 2], [1, 10 - lambda_digit / 2], [-3, lambda_digit]])
+    print("Task 3:")
+    print(np.dot(matrix_a, matrix_b))
+
+
+
 if __name__ == "__main__":
-    task1()
+    print("What are you want? (1 - Checking properties of a binary operation, 2 - Perform an operation on a binary relation, 3 - Perform an operation on a matrix, 4 - Check tasks)")
+    f = int(input())
+    if f == 1:
+        task1()
+    elif f == 2:
+        task2()
+    elif f == 3:
+        task3()
+    elif f == 4:
+        task4()
+    else:
+        print("Something going wrong! Enter a number from 1 to 3")
