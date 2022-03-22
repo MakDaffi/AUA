@@ -191,14 +191,14 @@ def isDistributive(matrix, st):
             for g in range(len(st)):
                 if not(matrix[i][st.index(matrix1[j][g])] ==
                 matrix1[st.index(matrix[i][j])][st.index(matrix[i][g])]
-                and matrix[st.index(matrix1[j][g])][j] ==
+                and matrix[st.index(matrix1[j][g])][i] ==
                 matrix1[st.index(matrix[j][i])][st.index(matrix[g][i])]):
                     flag = False
                     break
     if flag:
         print('This operation is distributive with respect to the introduced operation!')
     else:
-        print('This operation is not distributive!')
+        print('This operation is not distributive with respect to the introduced operation!')
 
 
 
