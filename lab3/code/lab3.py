@@ -93,7 +93,7 @@ def task3():
     n = int(input())
     print("Enter your matrix")
     a = np.array([list(map(int, input().split())) for _ in range(n)])
-    print('What are you want to do with this matrix?\n 1.Transpose matrix\n 2.Add matrix\n 3.Subtract matrix\n 4.Multiply by a constant\n 5.Multiply matrix')
+    print('What are you want to do with this matrix?\n 1.Transpose matrix\n 2.Add matrix\n 3.Subtract matrix\n 4.Multiply by a constant\n 5.Multiply matrix\n 6.Find inverse matrix')
     d = int(input())
     if d == 1:
         print(a.T)
@@ -101,6 +101,8 @@ def task3():
         print('Enter your constant')
         h = float(input())
         print(h * a)
+    elif d == 6:
+            print(np.linalg.inv(a))
     else:
         print("Enter another matrix")
         if d == 5:
