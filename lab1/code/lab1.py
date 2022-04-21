@@ -88,6 +88,7 @@ def makeTran(a):
                     if a[i][k] and a[k][j]:
                         a[i][j] = 1
 
+
 def get_set(a):
     s = []
     for i in range(len(a)):
