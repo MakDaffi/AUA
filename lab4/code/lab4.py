@@ -85,7 +85,7 @@ def task1():
         x_l = []
         for x in x_i:
             for y in subst:
-                x_l.append(matrix[x_i.index(x)][st.index(y)])
+                x_l.append(matrix[st.index(x)][st.index(y)])
         x_0 = x_i.copy()
         x_0.sort()
         x_i = list(set(x_i).union(set(x_l)))
@@ -128,12 +128,10 @@ def task2():
 def task3():
     print("Enter semigroup elements: ")
     semigroup_elems = [elem for elem in input().replace(",", "").split()]
-    n = len(semigroup_elems)
     print("Enter the elements of the transformation set: ")
     generators_list = input().replace(",", "").split()
-    gn = len(generators_list)
     translation_dict = {}
-    for i in range(gn):
+    for i in range(len(generators_list)):
         print(f"Enter transformation values '{generators_list[i]}' elements of the semigroup, respectively: ")
         print((str(semigroup_elems)[1:-1]).replace(", ", " ").replace("'", ""))
         translation = input().split()
@@ -148,4 +146,14 @@ def task3():
     print("The resulting ratios: ")
     print(translation_dict)
 
-task3()
+if __name__ == "__main__":
+    print("What are you want? (1 - Build subsemigroup by Cayley table, 2 - Build semigroup binary relations, 3 - Build semigroup by generating set and transformation set)")
+    f = int(input())
+    if f == 1:
+        task1()
+    elif f == 2:
+        task2()
+    elif f == 3:
+        task3()
+    else:
+        print("Something going wrong! Enter a number from 1 to 3")
