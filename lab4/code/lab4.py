@@ -1,32 +1,4 @@
 import numpy as np
-from itertools import product
-
-def get_set(a):
-    s = []
-    for i in range(len(a)):
-        for j in range(len(a[i])):
-            if a[i][j] == 1:
-                s.append((i + 1, j + 1))
-    return s
-
-
-def subsets(n):
-    nums = [i for i in range(n)]
-    from functools import reduce
-    return reduce(lambda res, x: res + [subset + [x] for subset in res],
-                  nums, [[]])[1:]
-
-
-def get_res(matrixes):
-    res = []
-    for subset in subsets(len(matrixes)):
-        podres = matrixes[subset[0]]
-        for index in subset[1:]:
-            podres *= matrixes[index]
-        for relation in get_set(podres):
-            res.append(relation)
-    return set(res)
-
 
 def add_correlation(cur_word, alph, dct, semigroup_elems):
     new_words = []
@@ -49,23 +21,24 @@ def add_correlation(cur_word, alph, dct, semigroup_elems):
     return new_words
 
 
-def find_correlation(ans):
-    result = {}
-    correlations = {}
-    for key, value in ans.items():
-        if not any(np.array_equal(value, i) for i in result.values()):
-            result[key] = value
-        else:
-            for k, v in result.items():
-                if np.array_equal(v, value):
-                    correlations[key] = k
-    print("Coopresentation: ")
-    for key, value in result.items():
-        print(key, ":\n", value)
-
-    print("The resulting ratios: ")
-    for key, value in correlations.items():
-        print(key, "->", value)
+def add_coopresentation(cur_bin_relations, bin_relations, k):
+    dct = bin_relations.copy()
+    flag = False
+    for key1 in cur_bin_relations:
+        for key in bin_relations:
+            if k == len(key):
+                bin_relation = cur_bin_relations[key1] * bin_relations[key]
+                new_key = key + key1
+                f = True
+                for key2 in dct:
+                    if np.array_equal(bin_relation, dct[key2]):
+                        print(new_key, "->", key2)
+                        f = False
+                        break
+                if f:
+                    dct[new_key] = bin_relation
+                    flag = True
+    return flag, dct
 
 
 def task1():
@@ -109,20 +82,16 @@ def task2():
         matrix = np.array(matrix).reshape(n, n)
         bin_relation_matrices[str(i)] = matrix
 
-    combinations_list = []
-    for i in range(1, bin_relation_amount + 1):
-        combinations = list(product(''.join([str(elem) for elem in range(1, bin_relation_amount + 1)]), repeat=i))
-        combinations_list += combinations
-
-    for comb in combinations_list:
-        cur_matrix = bin_relation_matrices[comb[0]].copy()
-        word = comb[0]
-        for comb_i in range(1, len(comb)):
-            cur_matrix *= bin_relation_matrices[comb[comb_i]]
-            word += comb[comb_i]
-        bin_relation_matrices[word] = cur_matrix
-
-    find_correlation(bin_relation_matrices)
+    flag = True
+    cur = bin_relation_matrices.copy()
+    k = 1
+    print("The resulting ratios: ")
+    while flag:
+        flag, bin_relation_matrices = add_coopresentation(cur, bin_relation_matrices, k)
+        k += 1
+    for key in bin_relation_matrices:
+        print(key, ':')
+        print(bin_relation_matrices[key])
 
 
 def task3():
