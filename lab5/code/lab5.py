@@ -3,6 +3,16 @@ import numpy as np
 order = []
 component = []
 
+def check_associative(set_list, a):
+  n = len(set_list)
+  for i in range(n):
+    for j in range(n):
+      for k in range(n):
+        if a[i][set_list.index(str(a[j][k]))] != \
+          a[set_list.index(str(a[i][j]))][k]:
+          return False
+  return True
+
 def dfs(graph, used, v):
     used[v] = True
     for i in range(len(graph)):
@@ -116,7 +126,10 @@ def task1():
     print('Enter Cayley table')
     print("  ", *st)
     cayley_table = [input(f'{i}  ').split() for i in st]
-    find_ideals(st, cayley_table)
+    if check_associative(st, cayley_table):
+        find_ideals(st, cayley_table)
+    else:
+        print('Your Cayley table is not associative!')
 
 
 def task2():
@@ -125,8 +138,11 @@ def task2():
     print('Enter Cayley table')
     print("  ", *st)
     cayley_table = [input(f'{i}  ').split() for i in st]
-    right_ideal, left_ideal, _ = find_ideals(st, cayley_table)
-    build_green_relation(right_ideal, left_ideal)
+    if check_associative(st, cayley_table):
+        right_ideal, left_ideal, _ = find_ideals(st, cayley_table)
+        build_green_relation(right_ideal, left_ideal)
+    else:
+        print('Your Cayley table is not associative!')
 
 
 def task3():
@@ -143,21 +159,27 @@ def task3():
         val = input()
         presentation[key] = val
     semigroup, cayley_table = gen_cayley_table(set_list, presentation)
-    right_ideal, left_ideal, _ = find_ideals(semigroup, cayley_table)
-    green_relation = build_green_relation(right_ideal, left_ideal)
-    used = [False for _ in range(len(green_relation))]
-    for i in range(len(green_relation)):
-        if (not(used[i])):
-            dfs(green_relation, used, i)
-    used = [False for _ in range(len(green_relation))]
-    egg_box = []
-    for i in range(len(green_relation)):
-        v = order[len(green_relation) - 1 - i]
-        if (not(used[v])):
-            dfs2(green_relation.T, used, v)
-            egg_box.append(component.copy())
-            component.clear()
-    print(egg_box)
+    if check_associative(semigroup, cayley_table):
+        right_ideal, left_ideal, _ = find_ideals(semigroup, cayley_table)
+        green_relation = build_green_relation(right_ideal, left_ideal)
+        used = [False for _ in range(len(green_relation))]
+        for i in range(len(green_relation)):
+            if (not(used[i])):
+                dfs(green_relation, used, i)
+        used = [False for _ in range(len(green_relation))]
+        egg_box = [[1]]
+        for i in range(len(green_relation)):
+            v = order[len(green_relation) - 1 - i]
+            if (not(used[v])):
+                dfs2(green_relation.T, used, v)
+                c = []
+                for el in component:
+                    c.append(semigroup[el])
+                egg_box.append(c.copy())
+                component.clear()
+        print(egg_box)
+    else:
+        print('Your Cayley table is not associative!')
 
 
 def task4():
@@ -181,3 +203,15 @@ def task4():
             egg_box.append(component.copy())
             component.clear()
     print(egg_box)
+
+if __name__ == "__main__":
+    print("What are you want? (1 - Find ideals, 2 - Build green relation, 3 - Build green relation and egg-boxes by generating set and transformation set)")
+    f = int(input())
+    if f == 1:
+        task1()
+    elif f == 2:
+        task2()
+    elif f == 3:
+        task3()
+    else:
+        print("Something going wrong! Enter a number from 1 to 3")
